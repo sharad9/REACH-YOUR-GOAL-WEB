@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>GOAL</title>
+	<meta name="viewport" content="width=device-width user-scalable=no"/>
+	<style >
+	 canvas {
+      border: 5px solid Cyan;
+      width: 97%;
+    }
+    
+    * {
+   -webkit-user-select: none; 
+    }
+	</style>
+</head>
+<body>
+  
+  <br><br>  <a href="https://www.instagram.com/sharad_maddheshiya_5/?hl=en"><strong> Created by:  SHARAD MADDHESHIYA </strong></a><br>
+	
+  <p><strong>Let Me Love You</strong></p>
+<audio controls><source src="https://dl.dropbox.com/s/x6f49cu1rdqnngu/Let%20Me%20Love%20You.mp3?dl=0" ></audio>	
+ <p><strong>Believer</strong></p>
+<audio controls><source src="https://dl.dropbox.com/s/e5y42cc90ugx09t/Believer.mp3?dl=0" ></audio>	
+
+  </audio>	
+</audio>	
+</audio>  
+<canvas id="mycanvas" width="640" height="300" ></canvas>
+<script >
+window.addEventListener("load",function() {
+      
+
+      var GAME_WIDTH = 700;
+      var GAME_HEIGHT = 300;
+
+      var gameLive = true;
+
+ 
+      var level = 1;
+      var life = 6;
+   var enemies = [
+        {
+          x: 100, 
+          y: 100,
+          speedY: 2, 
+          w: 40, 
+          h: 40
+        },
+        {
+          x: 200,
+          y: 0,
+          speedY: 2,
+          w: 40,
+          h: 40
+        },
+        {
+          x: 330,
+          y: 100,
+          speedY: 3,
+          w: 40,
+          h: 40
+        },
+        {
+          x: 450,
+          y: 100,
+          speedY: -3,
+          w: 40,
+          h: 40
+        }
+      ];
+
+  
+       var player = {
+        x: 10,
+        y: 160,
+        speedX: 2,
+        isMoving: false, 
+        w: 40,
+        h: 40
+      };
+
+     
+      var goal = {
+        x: 580,
+        y: 160,
+        w: 55,
+        h: 36
+      };
+      var canvas = document.getElementById("mycanvas");
+      var ctx = canvas.getContext("2d");
+      document.addEventListener('mousedown', movePlayer);
+      document.addEventListener('mouseup', stopPlayer);   
+      document.addEventListener('touchstart', movePlayer);
+      document.addEventListener('touchend', stopPlayer);   
+
+      function draw() {
+        
+        ctx.clearRect(0,0,GAME_WIDTH,GAME_HEIGHT);        
+
+        ctx.font='900 15px Arial';
+       
+        ctx.fillStyle = "rgb(0,0,0)";
+        ctx.fillText("Level : "+level, 10, 15);
+        ctx.fillText("Life : "+life , 10, 35);
+        ctx.fillText("Speed : "+ player.speedX, 10, 55);
+
+        ctx.fillStyle="rgb(255,0,0)";
+        ctx.fillRect(player.x,player.y,player.w,player.h);
+        ctx.fillStyle = "rgb(0,0,0)";
+        enemies.forEach(function(element, index){
+        	
+
+          ctx.fillRect(element.x, element.y, element.w, element.h);
+        });
+        
+         ctx.fillStyle = "rgb(0,255,120)";
+        ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
+
+         ctx.fillStyle = "rgb(0,0,0)";
+          ctx.fillText("GOAL" ,goal.x+7,goal.y+25);
+
+      };
+
+
+
+  function movePlayer() {
+        player.isMoving = true;
+      };
+
+      function stopPlayer() {
+        player.isMoving = false;
+      };
+
+
+
+	 function goalCollision(){
+	 	     if(checkCollision(player,goal)){
+               myVib();
+        	level+=1;
+        	life+=1;
+        	player.x=10;
+        	player.speedX+=1;
+        	player.isMoving=false;
+
+            enemies.forEach(function(element, index){
+        	if(enemies[index].speedY>1){
+        		enemies[index].speedY+=1;
+        	}else{
+        		enemies[index].speedY-=1;
+        	}
+        });
+    }
+
+	 }
+
+	function enemiesCollision(){
+
+        enemies.forEach(function(element,index){
+        	element.y+=element.speedY;
+        	if(checkCollision(player,element)){
+              myVib();
+        		player.x=10;
+        		player.isMoving=false;
+			if(life===0){
+
+				enemies.forEach(function(element,index){
+					if(element.speedY>1){
+						element.speedY-=(level-1);
+					}else{
+						element.speedY+=(level-1);
+					}
+
+
+			});
+
+                level=1;
+				life=6;
+				player.speedX=2;
+
+			}else if(life>0){life-=1;}	
+        	
+
+        	}
+
+        	if(element.y<=10){
+               element.y=10;
+               element.speedY*=-1;
+        	}else if(element.y>=GAME_HEIGHT-50){
+        		element.y=GAME_HEIGHT-50;
+        		element.speedY*=-1;
+        	}
+
+
+        });
+
+
+	}
+
+
+
+    function update(){
+
+   		goalCollision();
+   		enemiesCollision();
+
+        if(player.isMoving){
+            player.x+=player.speedX;
+        }
+
+}
+   
+    function checkCollision(obj1,obj2){
+        var closeOnWidth=Math.abs(obj1.x-obj2.x)<=Math.max(obj1.w,obj2.w);
+        var closeOnHeight=Math.abs(obj1.y-obj2.y)<=Math.max(obj1.h,obj2.h);
+        return closeOnWidth&&closeOnHeight;
+    }; 
+
+    function start(){
+        update();
+        draw();
+        window.requestAnimationFrame(start);
+
+    };  
+    start();
+  
+  
+  
+          
+ function myVib(){ navigator.vibrate(100);
+}
+    function vibrato(s){ navigator.vibrate(s) ;
+          }
+
+ });
+</script>
+</body>
+</html>
+
+
+
+
+
